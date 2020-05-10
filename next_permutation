@@ -1,0 +1,101 @@
+#include <algorithm> 
+#include <string>
+#include <iostream>
+/*Заціксивла мене один алгоритм пошуку наступної лексикографічної перестановки next_permutation
+Як вже сказана вона шукає наступну переставку і от я подумав що за доп неї можна посуті генерувати
+нові слова з наявних букв або підраховувати максимальну к-сть перестановок */
+int main()
+{
+    std::string s = "University";
+    std::string s2 = "University";// створюємо змиінну типу string 
+    std::cout << s << std::endl;    // виводимо нашу строку
+
+    /* 
+    Тепер про синтаксис ''next_permutation''
+    в  <algorithm> функція оголошена так:
+    1)
+    template< class BidirIt >
+    bool next_permutation(BidirIt first, BidirIt last);
+
+    тут:
+    first - це ітератор на початок контейнера,
+    last - це ітератор на кінець контейнера
+    Тобто можна задавати діапазон для пошуку перестановки
+
+    2)
+    template< class BidirIt, class Compare >
+    bool next_permutation( BidirIt first, BidirIt last, Compare comp );
+
+    тут додається comp - функція порівняння, що перевіряє чи з елементів можна
+    утворити наступну переставновку ( простіще чи наступний елемент > за попередній )
+
+    Якщо наступної перестаноаки не існує або доссягнуто останньої то
+    алгоритм зачтосовує sort до контейнера та повертає false
+    */
+
+    // Приклад реалізації цього алгоримну з cppreference
+    /*
+    template<class BidirIt>
+    bool next_permutation(BidirIt first, BidirIt last)
+    {
+        if (first == last) return false;
+        BidirIt i = last;
+        if (first == --i) return false;
+
+        while (1) {
+            BidirIt i1, i2;
+
+            i1 = i;
+            if (*--i < *i1) {
+                i2 = last;
+                while (!(*i < *--i2))
+                    ;
+                std::iter_swap(i, i2);
+                std::reverse(i1, last);
+                return true;
+            }
+            if (i == first) {
+                std::reverse(first, last);
+                return false;
+            }
+        }
+    }
+    */
+
+    // Тепер знайдемо наступну перестановку
+    std::next_permutation(s.begin(), s.end());
+    std::cout << "1 -> " << s << std::endl;
+
+    std::next_permutation(s.begin(), s.end());
+    std::cout << "2 -> " << s << std::endl;
+
+    std::next_permutation(s.begin(), s.end());
+    std::cout << "3 -> " << s << std::endl;
+
+    // Принцип зрозумілий 
+    // Тепер передамо віжчий інтервал для перестановки і подивимся що станеться
+    std::next_permutation(s2.begin(), s2.end());
+    std::next_permutation(s2.begin(), s2.end());
+
+    auto it = s2.begin() + 2;
+    std::next_permutation(it, s2.end()-2);
+    std::cout << "3 ( Experemental ) -> " << s2 << std::endl;
+
+    // Бачимо що алгоритм працює коректно і шукає переставовку в заданому діапазоні
+
+    // Тепер відсортуємо слово і виведемо к-сть перестановок для нього
+    // ця к-сть і буде максимальним числом переставовок так, як починатимемо з ''нуля''
+    int count = 0;  // Створив і ініціалізував змінну для підрахунку
+    std::sort(s.begin(), s.end());
+    do 
+    {
+        count++;
+        //std::cout << s << ' '; // за бажанням можна виводити кожну перестановку
+    } while (std::next_permutation(s.begin(), s.end()));
+    std::cout << "Result: " << count; // Тут прийдетьс трошки почекати так як слово доволі велике
+
+    // таким прикладом я розвязав задачку з 11 класу про знаходження к-сті перестановок :)
+
+    // Алгоритм має складністьт: (к-сть ітерацій щоб дійти до кінця слова )/ 2 переставонок
+    // Алгоритм застосовується не лише для слів але й інших типів даних
+}
